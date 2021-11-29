@@ -1,0 +1,33 @@
+package convivit.api
+import java.time.LocalDate
+
+class Meet {
+  Consorcio consorcio
+  LocalDate date
+  String title
+  String content
+  Boolean votable
+  Boolean approved
+  LocalDate due_date
+
+  static hasMany = [
+      votes: Vote
+  ]
+
+  static constraints = {
+  }
+
+  void updateStatus() {
+    int total = this.consorcio.units.size()
+    int afirmative = this.votes.find { it.value == true }.size()
+    int negative = this.votes.find { it.value == false }.size()
+    boolean half_votes = (total / 2) > this.votes.size()
+    if (half_votes)
+      this.approved = afirmative > negative
+      this.save()
+  }
+
+  Boolean valid() {
+      this.votable && this.due_date <= LocalDate.now()
+  }
+}
