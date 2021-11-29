@@ -7,7 +7,7 @@ class Unit {
     // Appartment, House
     String kind
 
-    static belongsTo = Consorcio
+    static belongsTo = [consorcio: Consorcio]
     static hasMany = [users: UserRole]
 
     static constraints = {
@@ -29,7 +29,6 @@ class Unit {
 
     User getTenant() {
       UserRole i = this.users.find { it.role == 'tenant' }
-      println "Role found: " + i.getClass().toString()
       return i?.user
      }
 }

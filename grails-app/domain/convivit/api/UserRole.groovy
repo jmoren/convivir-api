@@ -41,7 +41,7 @@ class UserRole {
 
         def vote = new Vote(value: value, meet: meet, date: LocalDate.now(), role: this).save()
         this.addToVotes(vote)
-        asamblea.addToVotes(vote)
+        meet.addToVotes(vote)
         return vote
     }
 
@@ -78,6 +78,7 @@ class UserRole {
     }
 
     private Boolean allowedToVoteIn(Meet meet) {
+      if (this.unit.consorcio.id == meet.consorcio.id) {
         Vote done = this.votes.find {
             it.meet.id == meet.id
         }
@@ -94,5 +95,8 @@ class UserRole {
         }
 
         return true
+      } else {
+          throw new IllegalStateException("No podes votar en un consorcio que no es el tuyo")
+      }
     }
 }

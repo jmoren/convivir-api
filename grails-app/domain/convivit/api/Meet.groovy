@@ -2,16 +2,18 @@ package convivit.api
 import java.time.LocalDate
 
 class Meet {
-  Consorcio consorcio
   LocalDate date
   String title
   String content
   Boolean votable
   Boolean approved
-  LocalDate due_date
+  LocalDate dueDate
 
+  static belongsTo = [
+    consorcio: Consorcio
+  ]
   static hasMany = [
-      votes: Vote
+    votes: Vote
   ]
 
   static constraints = {
@@ -28,6 +30,6 @@ class Meet {
   }
 
   Boolean valid() {
-      this.votable && this.due_date <= LocalDate.now()
+      this.votable && this.dueDate <= LocalDate.now()
   }
 }

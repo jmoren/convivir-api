@@ -23,8 +23,49 @@ class UserRoleSpec extends Specification implements DomainUnitTest<UserRole> {
       unit.addToUsers(role)
     }
 
+    def setUpConsorcioWithMeet(Boolean votable) {
+      def consorcio = new Consorcio(
+        name: "Test",
+        address: "Mi calle 123",
+        type: "Building"
+      ).save()
+
+      def today = LocalDate.now()
+      def meet = new Meet(
+        date: today,
+        dueDate: today.plusDays(7),
+        title: "Asamblea I",
+        content: "El acta va aca",
+        votable: votable,
+        approved: false
+      ).save()
+      consorcio.addToMeets(meet)
+
+      return consorcio
+    }
+
+    def setUpUnitAsOwnerWithConsorcio(Consorcio consorcio, Boolean withTenant) {
+      def unit = new Unit(street: "Melancolia", number: "34", type: "Apartment").save()
+
+      consorcio.addUnit(unit)
+
+      def owner = new User(
+          first_name: "Jorge",
+          last_name: "Moreno",
+          email: "propietario@test.com"
+      ).save()
+
+      def role = new UserRole(role: "owner")
+      owner.addToRoles(role)
+      unit.addToUsers(role)
+
+      if (withTenant) {
+        addTenant(unit)
+      }
+    }
+
     def setUpUnitAsOwner(Boolean withTenant) {
-      def unit = new Unit(street: "Melancolia", number: "34", type: "House").save()
+      def unit = new Unit(street: "Melancolia", number: "34", type: "Apartment").save()
       def owner = new User(
           first_name: "Jorge",
           last_name: "Moreno",
@@ -117,5 +158,21 @@ class UserRoleSpec extends Specification implements DomainUnitTest<UserRole> {
           Invitation.count() == 1
           Exception e = thrown()
           e.message == "Ya existe una invitacion para el DNI 234234343"
+    }
+
+    void "Votar una asamblea habilitada"() {
+      given:
+        def votable = true
+        def withTenant = false
+        def consorcio = setUpConsorcioWithMeet(votable)
+        setUpUnitAsOwnerWithConsorcio(consorcio, withTenant)
+      when:
+        UserRole role = User.findByEmail("propietario@test.com").roles[0]
+        Meet meet = Meet.get(1)
+        role.vote(meet, true)
+      then:
+        role.votes.size() == 1
+        role.votes[0].value == true
+        meet.votes.size() == 1
     }
 }

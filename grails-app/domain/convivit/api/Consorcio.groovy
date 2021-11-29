@@ -6,9 +6,11 @@ class Consorcio {
     String type
 
     Set units = []
+    Set meets = []
     static belongsTo = [admin: UserRole]
     static hasMany = [
-      units: Unit
+      units: Unit,
+      meets: Meet
     ]
     static constraints = {
     }

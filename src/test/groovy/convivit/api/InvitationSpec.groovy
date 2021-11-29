@@ -11,7 +11,27 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
     def cleanup() {
     }
 
-    void "test something"() {
+    void "Utilizar una invitacion valida"() {
+        expect:"fix me"
+            true == true
+    }
+
+    void "Utilizar una invitacion invalida"() {
+        expect:"fix me"
+            true == true
+    }
+
+    void "Utilizar una invitacion dos veces"() {
+        expect:"fix me"
+            true == true
+    }
+
+    void "Extender una invitacion valida"() {
+        expect:"fix me"
+            true == true
+    }
+
+    void "Cancelar una invitacion utilizada"() {
         expect:"fix me"
             true == true
     }
