@@ -11,7 +11,7 @@ json g.render(user){
 			unit: (it.role == 'admin' ? null : [
 				id: it.unit.id,
 				kind: it.unit.kind,
-				consorcio: it.unit.consorcio.name,
+				consorcio: [ name: it.unit.consorcio.name, id: it.unit.consorcio.id ],
 				floor: (it.unit.kind == 'Apartment' ? (it.unit.floor + " " + it.unit.number) : null),
 				address: it.unit.consorcio.address,
 				internal_address: (it.unit.kind == 'House' ? (it.unit.address + " " + it.unit.number) : null)
