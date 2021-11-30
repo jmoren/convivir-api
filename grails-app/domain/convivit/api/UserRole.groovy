@@ -4,6 +4,7 @@ import java.time.LocalDate
 class UserRole {
     // owner, tenant
     String role
+    Boolean authorized
 
     static belongsTo = [
       user: User,
@@ -16,6 +17,8 @@ class UserRole {
     ]
 
     static constraints = {
+        unit nullable: true
+        authorized nullable: true, default: false
     }
 
     Invitation inviteTo(LocalDate fromDate, LocalDate toDate, String email, String dni) {

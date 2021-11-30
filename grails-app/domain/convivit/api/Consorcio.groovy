@@ -7,6 +7,7 @@ class Consorcio {
 
     Set units = []
     Set meets = []
+
     static belongsTo = [admin: UserRole]
     static hasMany = [
       units: Unit,

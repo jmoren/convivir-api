@@ -1,16 +1,17 @@
 package convivit.api
 
 class Unit {
-    String street
+    String address
     String number
     String floor
-    // Appartment, House
+    // Apartment, House
     String kind
 
     static belongsTo = [consorcio: Consorcio]
-    static hasMany = [users: UserRole]
+    static hasMany = [roles: UserRole]
 
     static constraints = {
+      floor nullable: true
     }
 
     Boolean isApartment() {
@@ -22,13 +23,13 @@ class Unit {
     }
 
     User getOwner() {
-      UserRole p = this.users.find { it.role == 'owner' }
+      UserRole owner = this.roles.find { it.role == 'owner' }
 
-      return p?.user
+      return owner?.user
     }
 
     User getTenant() {
-      UserRole i = this.users.find { it.role == 'tenant' }
-      return i?.user
+      UserRole tenant = this.roles.find { it.role == 'tenant' }
+      return tenant?.user
      }
 }
