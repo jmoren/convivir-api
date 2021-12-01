@@ -114,7 +114,7 @@ class UserRoleSpec extends Specification implements DomainUnitTest<UserRole> {
           invitation.dni == "234234343"
     }
 
-    void "Invitacion espcial invalida"() {
+    void "Invitacion especial invalida"() {
       given:
           def withTenant = true
           setUpUnitAsOwner(withTenant)

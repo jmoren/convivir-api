@@ -78,7 +78,7 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
       when:
         Invitation i = Invitation.get(1)
         LocalDate newDate = LocalDate.now().plusDays(5)
-        i.extend(newDate)
+        i.extendIt(newDate)
       then:
         i.toDate == newDate
     }
@@ -91,7 +91,7 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
       when:
         Invitation i = Invitation.get(1)
         LocalDate newDate = LocalDate.now().plusDays(5)
-        i.extend(newDate)
+        i.extendIt(newDate)
       then:
         Exception e = thrown()
         e.message  == "La invitacion ya se venció"
@@ -105,7 +105,7 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
       when:
         Invitation i = Invitation.get(1)
         LocalDate newDate = LocalDate.now().plusDays(5)
-        i.extend(newDate)
+        i.extendIt(newDate)
       then:
         Exception e = thrown()
         e.message  == "No se puede extender porque ya esta cancelada"
@@ -151,7 +151,42 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
         i.closedAt == LocalDate.now()
     }
 
-    void "Cancelar una invitacion en uso"(){}
+    void "Cancelar una invitacion en uso"(){
+      given:
+        LocalDate from = LocalDate.now().minusDays(2)
+        LocalDate to = LocalDate.now().minusDays(1)
+        setupInvitation("validated", from, to)
+      when:
+        Invitation i = Invitation.get(1)
+        i.cancelIt()
+      then:
+        Exception e = thrown()
+        e.message == "No se puede cancelar una invitacion en uso"
+    }
 
-    void "Cerrar una invitacion pendinte"(){}
+    void "Cancelar una invitacion cancelada"(){
+      given:
+        LocalDate from = LocalDate.now().minusDays(2)
+        LocalDate to = LocalDate.now().minusDays(1)
+        setupInvitation("canceled", from, to)
+      when:
+        Invitation i = Invitation.get(1)
+        i.cancelIt()
+      then:
+        Exception e = thrown()
+        e.message == "No se puede cancelar una invitacion ya cancelada"
+    }
+
+    void "Cancelar una invitacion pendinte"(){
+      given:
+        LocalDate from = LocalDate.now().minusDays(2)
+        LocalDate to = LocalDate.now().minusDays(1)
+        setupInvitation("pending", from, to)
+      when:
+        Invitation i = Invitation.get(1)
+        i.cancelIt()
+      then:
+        i.status == "canceled"
+        i.canceledAt == LocalDate.now()
+    }
  }

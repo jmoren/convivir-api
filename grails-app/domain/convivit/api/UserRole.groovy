@@ -40,12 +40,16 @@ class UserRole {
     }
 
     Vote vote(Meet meet, Boolean value) {
-        this.allowedToVoteIn(meet)
+      if (this.unit.consorcio.id != meet.consorcio.id) {
+        throw new IllegalStateException("Esta asamblea no es de tu consorcio")
+      }
 
-        def vote = new Vote(value: value, meet: meet, date: LocalDate.now(), role: this).save()
-        this.addToVotes(vote)
-        meet.addToVotes(vote)
-        return vote
+      this.allowedToVoteIn(meet)
+
+      def vote = new Vote(value: value, meet: meet, date: LocalDate.now(), role: this).save()
+      this.addToVotes(vote)
+      meet.addToVotes(vote)
+      return vote
     }
 
     private Boolean stopIfAlreadyInvited(LocalDate from, String dni) {
@@ -61,11 +65,11 @@ class UserRole {
     }
 
     private Boolean stopIfHasInValidDates(String kind, LocalDate from, LocalDate to) {
-      if (kind == 'Personal' && to < from) {
+      if (kind == 'Personal' && to.isBefore(from)) {
         throw new IllegalStateException("La fecha desde no puede ser mayor a la fecha hasta")
       }
 
-      if (kind == 'Special' && from != to) {
+      if (kind == 'Special' && from.compareTo(to) != 0) {
         throw new IllegalStateException("Una invitacion especial solo puede ser por el dia")
       }
 
@@ -81,25 +85,21 @@ class UserRole {
     }
 
     private Boolean allowedToVoteIn(Meet meet) {
-      if (this.unit.consorcio.id == meet.consorcio.id) {
-        Vote done = this.votes.find {
-            it.meet.id == meet.id
-        }
-        if (done) {
-            throw new IllegalStateException("Ya has votado")
-        }
-
-        if ((this.role == 'tenant' && !this.authorized) || this.role == 'admin') {
-            throw new IllegalStateException("No tienes permisos para votar")
-        }
-
-        if (meet.valid()) {
-            throw new IllegalStateException("Ya pasó la fecha limite")
-        }
-
-        return true
-      } else {
-          throw new IllegalStateException("No podes votar en un consorcio que no es el tuyo")
+      Vote voted = this.votes.find {
+          it.meet.id == meet.id
       }
+      if (voted) {
+          throw new IllegalStateException("Ya has votado")
+      }
+
+      if ((this.role == 'tenant' && !this.authorized) || this.role == 'admin') {
+          throw new IllegalStateException("No tienes permisos para votar")
+      }
+
+      if (meet.valid()) {
+          throw new IllegalStateException("Ya pasó la fecha limite")
+      }
+
+      return true
     }
 }

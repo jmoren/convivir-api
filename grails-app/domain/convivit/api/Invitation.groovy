@@ -55,7 +55,7 @@ class Invitation {
       }
     }
 
-    Invitation extend(LocalDate newDate) {
+    Invitation extendIt(LocalDate newDate) {
       def today = LocalDate.now()
       if (this.status == "pending" && this.fromDate.compareTo(today) < 0) {
         throw new IllegalStateException("La invitacion ya se venció")
@@ -70,14 +70,18 @@ class Invitation {
       return this
     }
 
-    Invitation cancel() {
-      if (this.status == 'pending') {
-        this.status = 'canceled'
-        this.canceledAt = LocalDate.now()
-        this.save()
-        return this
-      } else {
-        throw new IllegalStateException("Invitacion ya utilizada o cancelada")
+    Invitation cancelIt() {
+      if (this.status == 'validated') {
+        throw new IllegalStateException("No se puede cancelar una invitacion en uso")
       }
+
+      if (this.status == 'canceled') {
+        throw new IllegalStateException("No se puede cancelar una invitacion ya cancelada")
+      }
+
+      this.status = 'canceled'
+      this.canceledAt = LocalDate.now()
+      this.save()
+      return this
     }
 }
