@@ -3,66 +3,77 @@ import java.time.LocalDate
 
 class Invitation {
     static belongsTo = [role: UserRole]
-
+    // Status: pending, validated, canceled, overdue, closed
     String dni
     String email
     String kind
     String status
+    Boolean overDue
     LocalDate fromDate
     LocalDate toDate
+    LocalDate validatedAt
+    LocalDate closedAt
+    LocalDate canceledAt
 
     static constraints = {
-    }
-
-    Boolean valid() {
-        Boolean pending = this.status == 'pending'
-        Boolean today = this.fromDate == LocalDate.now()
-        return (pending && today)
+      validatedAt nullable: true
+      closedAt nullable: true
+      canceledAt nullable: true
+      overDue nullable: true, default: false
     }
 
     Invitation useIt() {
-        if (this.valid()) {
-            this.status = 'validated'
-            this.save()
-            return this
-        } else {
-            throw new IllegalStateException("Invitacion invalida")
-        }
+      def today = LocalDate.now()
+      if (this.status == 'validated') {
+        throw new IllegalStateException("Invitacion ya utilizada")
+      }
+      if (this.fromDate > today) {
+        throw new IllegalStateException("Invitacion no es valida para hoy")
+      }
+      if (this.fromDate < today) {
+        this.status = 'overdue'
+        this.save()
+        throw new IllegalStateException("Invitacion esta vencida")
+      }
+
+      this.status = 'validated'
+      this.validatedAt = LocalDate.now()
+      this.save()
+      return this
     }
 
     Invitation closeIt() {
-      Boolean overDue = this.toDate < LocalDate.now()
-        if (!overDue) {
-          if (this.status == 'validated') {
-              this.status = 'done'
-              this.save()
-              return this
-          } else {
-            throw new IllegalStateException("Invitacion invalida")
-          }
-        } else {
-          throw new IllegalStateException("Invitacion se paso del limite!")
-        }
+      def today = LocalDate.now()
+      if (this.status == 'validated') {
+        this.status = 'closed'
+        this.closedAt = LocalDate.now()
+        this.overDue =  this.fromDate.compareTo(today) < 1
+        this.save()
+        return this
+      } else {
+        throw new IllegalStateException("Invitacion no esta validada")
+      }
     }
 
-    Invitation extendDate(LocalDate newDate) {
-      Boolean overDue = this.toDate < LocalDate.now()
-      if (!overDue) {
-        if (this.status != 'canceled' && this.toDate > newDate) {
-          this.date = newDate
-          this.save()
-          return this
-        } else {
-          throw new IllegalStateException("La nueva fecha no puede ser menor de la original")
-        }
-      } else {
+    Invitation extend(LocalDate newDate) {
+      def today = LocalDate.now()
+      if (this.status == "pending" && this.fromDate.compareTo(today) < 0) {
         throw new IllegalStateException("La invitacion ya se venció")
       }
+
+      if (this.status == 'canceled') {
+        throw new IllegalStateException("No se puede extender porque ya esta cancelada")
+      }
+
+      this.toDate = newDate
+      this.save()
+      return this
     }
 
     Invitation cancel() {
       if (this.status == 'pending') {
         this.status = 'canceled'
+        this.canceledAt = LocalDate.now()
         this.save()
         return this
       } else {

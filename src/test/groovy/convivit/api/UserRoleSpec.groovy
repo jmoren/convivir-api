@@ -20,7 +20,7 @@ class UserRoleSpec extends Specification implements DomainUnitTest<UserRole> {
 
       def role = new UserRole(role: "tenant")
       tenant.addToRoles(role)
-      unit.addToUsers(role)
+      unit.addToRoles(role)
     }
 
     def setUpConsorcioWithMeet(Boolean votable) {
@@ -57,7 +57,7 @@ class UserRoleSpec extends Specification implements DomainUnitTest<UserRole> {
 
       def role = new UserRole(role: "owner")
       owner.addToRoles(role)
-      unit.addToUsers(role)
+      unit.addToRoles(role)
 
       if (withTenant) {
         addTenant(unit)
@@ -74,7 +74,7 @@ class UserRoleSpec extends Specification implements DomainUnitTest<UserRole> {
 
       def role = new UserRole(role: "owner")
       owner.addToRoles(role)
-      unit.addToUsers(role)
+      unit.addToRoles(role)
 
       if (withTenant) {
         addTenant(unit)
@@ -174,5 +174,24 @@ class UserRoleSpec extends Specification implements DomainUnitTest<UserRole> {
         role.votes.size() == 1
         role.votes[0].value == true
         meet.votes.size() == 1
+    }
+
+    void "Votar por segunda vez una asamblea habilitada"() {
+      given:
+        def votable = true
+        def withTenant = false
+        def consorcio = setUpConsorcioWithMeet(votable)
+        setUpUnitAsOwnerWithConsorcio(consorcio, withTenant)
+      when:
+        UserRole role = User.findByEmail("propietario@test.com").roles[0]
+        Meet meet = Meet.get(1)
+        role.vote(meet, true)
+        role.vote(meet, false)
+      then:
+        role.votes.size() == 1
+        role.votes[0].value == true
+        meet.votes.size() == 1
+        Exception e = thrown()
+        e.message == "Ya has votado"
     }
 }
