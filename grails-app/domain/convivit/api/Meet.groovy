@@ -22,9 +22,10 @@ class Meet {
 
   void updateStatus() {
     int total = this.consorcio.units.size()
-    int afirmative = this.votes.find { it.value == true }.size()
-    int negative = this.votes.find { it.value == false }.size()
-    boolean half_votes = (total / 2) > this.votes.size()
+    int afirmative = this.votes.findAll { it.value == true }.size()
+    int negative = this.votes.findAll { it.value == false }.size()
+    int totalVotes = this.votes.size()
+    boolean half_votes = (total / 2) > totalVotes
     if (half_votes)
       this.approved = afirmative > negative
       this.save()

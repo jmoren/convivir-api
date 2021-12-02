@@ -6,11 +6,12 @@ import grails.gorm.transactions.Transactional
 class VotingService {
 
     Vote voteMeet(Long meetId, Long roleId, Boolean value) {
-      role = UserRole.get(roleId)
-      meet = Meet.get(meetId)
+      println "MeetId: " + meetId + " RoleId: " + roleId + " Value: " + value
+      def role = UserRole.get(roleId)
+      def meet = Meet.get(meetId)
       Vote vote = role.vote(meet, value)
       // check how is the voting status
-      meet.updateStatus()
+      meet.updateStatus(vote)
       return vote
     }
 

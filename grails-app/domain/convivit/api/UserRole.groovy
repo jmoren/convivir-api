@@ -46,9 +46,8 @@ class UserRole {
 
       this.allowedToVoteIn(meet)
 
-      def vote = new Vote(value: value, meet: meet, date: LocalDate.now(), role: this).save()
-      this.addToVotes(vote)
-      meet.addToVotes(vote)
+      def vote = new Vote(value: value, meet: meet, date: LocalDate.now(), role: this).save(failureOnError: true)
+      println "Vote! " + vote
       return vote
     }
 

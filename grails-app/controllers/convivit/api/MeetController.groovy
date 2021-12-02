@@ -18,15 +18,9 @@ class MeetController extends RestfulController {
       respond([meetList: meets])
     }
 
-    // def show(Long id) {
-    //   println "Meet id: " + id
-    //   def meet = Meet.get(id)
-    //   println "Meet found: " + meet
-    //   respond(meet)
-    // }
-
-    def vote(Long meetId, Long userRoleId) {
-      def vote = VotingService.voteMeet(meetId, userRoleId)
+    def vote(Long id, Long roleId, Boolean v) {
+      def myValue = request.JSON.vote
+      def vote = VotingService.voteMeet(id, roleId, myValue)
       respond(vote)
     }
 }

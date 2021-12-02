@@ -4,4 +4,6 @@ model {
 	Meet meet
 }
 
-json g.render(meet, [deep: true])
+json g.render(meet) {
+	votes g.render(meet.votes)
+}
