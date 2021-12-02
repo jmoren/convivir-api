@@ -47,6 +47,7 @@ class UserRole {
       this.allowedToVoteIn(meet)
 
       def vote = new Vote(value: value, meet: meet, role: this, date: LocalDate.now()).save()
+      this.addToVotes(vote)
       return vote
     }
 

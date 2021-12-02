@@ -21,7 +21,7 @@ class Meet {
     finishedAt nullable: true
   }
 
-  void updateStatus(Vote vote) {
+  void addVote(Vote vote) {
     this.addToVotes(vote)
     int total = this.consorcio.units.size()
     int afirmative = this.votes.findAll { it.value == true }.size()

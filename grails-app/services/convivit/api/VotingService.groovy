@@ -9,8 +9,8 @@ class VotingService {
       def role = UserRole.get(roleId)
       def meet = Meet.get(meetId)
       Vote vote = role.vote(meet, value)
-      // check how is the voting status
-      meet.updateStatus(vote)
+
+      meet.addVote(vote)
       return vote
     }
 
