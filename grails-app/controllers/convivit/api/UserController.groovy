@@ -9,4 +9,9 @@ class UserController extends RestfulController {
     UserController() {
         super(User)
     }
+
+    def login() {
+      def e = request.JSON.email
+      respond(User.findByEmail(e))
+    }
 }
