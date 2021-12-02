@@ -11,14 +11,14 @@ class UserRoleSpec extends Specification implements DomainUnitTest<UserRole> {
     def cleanup() {
     }
 
-    def addTenant(Unit unit) {
+    def addTenant(Unit unit, Boolean authorized) {
       def tenant = new User(
           first_name: "Mauro",
           last_name: "Icardi",
           email: "inquilino@test.com"
-      ).save()
+      ).save(failureOnError: true)
 
-      def role = new UserRole(role: "tenant")
+      def role = new UserRole(role: "tenant", authorized: authorized)
       tenant.addToRoles(role)
       unit.addToRoles(role)
     }
@@ -44,7 +44,7 @@ class UserRoleSpec extends Specification implements DomainUnitTest<UserRole> {
       return consorcio
     }
 
-    def setUpUnitAsOwnerWithConsorcio(Consorcio consorcio, Boolean withTenant) {
+    def setUpUnitAsOwnerWithConsorcio(Consorcio consorcio, Boolean withTenant, Boolean authorized) {
       def unit = new Unit(street: "Melancolia", number: "34", type: "Apartment").save()
 
       consorcio.addUnit(unit)
@@ -60,7 +60,7 @@ class UserRoleSpec extends Specification implements DomainUnitTest<UserRole> {
       unit.addToRoles(role)
 
       if (withTenant) {
-        addTenant(unit)
+        addTenant(unit, authorized)
       }
     }
 
@@ -77,7 +77,7 @@ class UserRoleSpec extends Specification implements DomainUnitTest<UserRole> {
       unit.addToRoles(role)
 
       if (withTenant) {
-        addTenant(unit)
+        addTenant(unit, false)
       }
     }
 
@@ -164,8 +164,9 @@ class UserRoleSpec extends Specification implements DomainUnitTest<UserRole> {
       given:
         def votable = true
         def withTenant = false
+        def authorized = false
         def consorcio = setUpConsorcioWithMeet(votable)
-        setUpUnitAsOwnerWithConsorcio(consorcio, withTenant)
+        setUpUnitAsOwnerWithConsorcio(consorcio, withTenant, authorized)
       when:
         UserRole role = User.findByEmail("propietario@test.com").roles[0]
         Meet meet = Meet.get(1)
@@ -180,8 +181,9 @@ class UserRoleSpec extends Specification implements DomainUnitTest<UserRole> {
       given:
         def votable = true
         def withTenant = false
+        def authorized = false
         def consorcio = setUpConsorcioWithMeet(votable)
-        setUpUnitAsOwnerWithConsorcio(consorcio, withTenant)
+        setUpUnitAsOwnerWithConsorcio(consorcio, withTenant, authorized)
       when:
         UserRole role = User.findByEmail("propietario@test.com").roles[0]
         Meet meet = Meet.get(1)
@@ -192,6 +194,28 @@ class UserRoleSpec extends Specification implements DomainUnitTest<UserRole> {
         role.votes[0].value == true
         meet.votes.size() == 1
         Exception e = thrown()
-        e.message == "Ya has votado"
+        e.message == "Ya hay un voto de esta unidad: Jorge Moreno (Propietario)"
+    }
+
+    void "Votar como owner cuando ya voto el inquilino"() {
+      given:
+        def votable = true
+        def withTenant = true
+        def authorized = true
+        def consorcio = setUpConsorcioWithMeet(votable)
+        setUpUnitAsOwnerWithConsorcio(consorcio, withTenant, authorized)
+      when:
+        UserRole tenant = User.findByEmail("inquilino@test.com").roles[0]
+        UserRole owner = User.findByEmail("propietario@test.com").roles[0]
+        Meet meet = Meet.get(1)
+        tenant.vote(meet, true)
+        owner.vote(meet, false)
+      then:
+        tenant.votes.size() == 1
+        tenant.votes[0].value == true
+        meet.votes.size() == 1
+        owner.votes.size() == 0
+        Exception e = thrown()
+        e.message == "Ya hay un voto de esta unidad: Mauro Icardi (Inquilino)"
     }
 }

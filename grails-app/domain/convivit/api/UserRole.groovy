@@ -5,7 +5,7 @@ class UserRole {
     // owner, tenant
     String role
     Boolean authorized
-
+    Set votes = []
     static belongsTo = [
       user: User,
       unit: Unit
@@ -46,8 +46,8 @@ class UserRole {
 
       this.allowedToVoteIn(meet)
 
-      def vote = new Vote(value: value, meet: meet, date: LocalDate.now(), role: this).save(failureOnError: true)
-      println "Vote! " + vote
+      def vote = new Vote(value: value, meet: meet, date: LocalDate.now()).save(failureOnError: true)
+      this.addToVotes(vote)
       return vote
     }
 
@@ -84,11 +84,15 @@ class UserRole {
     }
 
     private Boolean allowedToVoteIn(Meet meet) {
-      Vote voted = this.votes.find {
-          it.meet.id == meet.id
+      Vote voted = meet.votes.find {
+        it.role.unit.id == this.unit.id
       }
+
       if (voted) {
-          throw new IllegalStateException("Ya has votado")
+        def role_name = voted.role.role == 'tenant' ? 'Inquilino' : 'Propietario'
+        def user_name = "${voted.role.user.first_name} ${voted.role.user.last_name}"
+        def message = "Ya hay un voto de esta unidad: ${user_name} (${role_name})"
+        throw new IllegalStateException(message)
       }
 
       if ((this.role == 'tenant' && !this.authorized) || this.role == 'admin') {

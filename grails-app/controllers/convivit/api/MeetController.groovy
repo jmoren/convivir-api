@@ -19,8 +19,14 @@ class MeetController extends RestfulController {
     }
 
     def vote(Long id, Long roleId, Boolean v) {
-      def myValue = request.JSON.vote
-      def vote = VotingService.voteMeet(id, roleId, myValue)
-      respond(vote)
+      try {
+        def myValue = request.JSON.vote
+        def vote = VotingService.voteMeet(id, roleId, myValue)
+        respond(vote)
+      } catch (Exception e) {
+        render( status: 403, contentType: "text/json"){
+            error e.message
+        }
+      }
     }
 }

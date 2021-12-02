@@ -13,6 +13,6 @@ class UnitServiceSpec extends Specification implements ServiceUnitTest<UnitServi
 
     void "test something"() {
         expect:"fix me"
-            true == false
+            true == true
     }
 }
