@@ -1,0 +1,8 @@
+import convivit.api.Unit
+
+model {
+	Iterable<Unit> unitList
+}
+
+json tmpl.unit(unitList ?: [])
+

@@ -17,6 +17,7 @@ class Meet {
   ]
 
   static constraints = {
+    dueDate nullable: true
   }
 
   void updateStatus() {

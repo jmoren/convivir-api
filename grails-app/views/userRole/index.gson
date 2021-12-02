@@ -1,0 +1,7 @@
+import convivit.api.UserRole
+
+model {
+	Iterable<UserRole> userRoleList
+}
+
+json tmpl.userRole(userRoleList ?: [])

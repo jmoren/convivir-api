@@ -1,0 +1,7 @@
+import convivit.api.Meet
+
+model {
+	Meet meet
+}
+
+json g.render(meet, [resolveTemplate: false])

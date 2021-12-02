@@ -1,0 +1,7 @@
+import convivit.api.Consorcio
+
+model {
+	Consorcio consorcio
+}
+
+json g.render(consorcio, [resolveTemplate: false])

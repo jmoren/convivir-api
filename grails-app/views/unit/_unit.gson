@@ -1,0 +1,9 @@
+import convivit.api.Unit
+
+model {
+	Unit unit
+}
+
+json g.render(unit, [resolveTemplate: false, excludes: ['consorcio']]) {
+	consorcio g.render(unit.consorcio)
+}

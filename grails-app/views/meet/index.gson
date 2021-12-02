@@ -1,0 +1,8 @@
+import convivit.api.Meet
+
+model {
+	Iterable<Meet> meetList
+}
+
+json tmpl.meet(meetList ?: [])
+

@@ -1,0 +1,9 @@
+import convivit.api.Unit
+
+model {
+	Unit unit
+}
+
+json tmpl.unit(unit, [deep: true]) {
+	consorcio g.render(unit.consorcio)
+}

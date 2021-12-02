@@ -1,0 +1,9 @@
+import convivit.api.UserRole
+
+model {
+	UserRole userRole
+}
+
+json g.render(userRole, [deep: true, excludes: ['user', 'votes', 'invitations']]) {
+	unit g.render(userRole.unit)
+}

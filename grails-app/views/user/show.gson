@@ -5,19 +5,5 @@ model {
 }
 
 json g.render(user){
-    def myRoles = user.roles.collect {[
-      id: it.id,
-      role: it.role,
-			unit: (it.role == 'admin' ? null : [
-				id: it.unit.id,
-				kind: it.unit.kind,
-				consorcio: [ name: it.unit.consorcio.name, id: it.unit.consorcio.id ],
-				floor: (it.unit.kind == 'Apartment' ? (it.unit.floor + " " + it.unit.number) : null),
-				address: it.unit.consorcio.address,
-				internal_address: (it.unit.kind == 'House' ? (it.unit.address + " " + it.unit.number) : null)
-			]),
-			authorized: it.authorized
-    ]}
-
-    roles myRoles
+	roles g.render(user.roles)
 }

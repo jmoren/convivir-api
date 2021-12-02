@@ -1,5 +1,5 @@
 package convivit.api
-
+import java.time.LocalDate
 class BootStrap {
 
     def init = { servletContext ->
@@ -17,6 +17,32 @@ class BootStrap {
         admin: role
       ).save()
 
+      def meet1 = new Meet(
+          date: LocalDate.now().minusDays(20),
+          votable: false,
+          title: "Asamblea I",
+          content: "El acta de la asamblea va aca.",
+          approved: false,
+          consorcio: consorcio
+      ).save(failOnError: true)
+      def meet2 = new Meet(
+          date: LocalDate.now().minusDays(20),
+          dueDate: LocalDate.now().minusDays(10),
+          votable: true,
+          title: "Asamblea II",
+          content: "El acta de la asamblea va aca.",
+          approved: true,
+          consorcio: consorcio
+      ).save(failOnError: true)
+      def meet3 = new Meet(
+          date: LocalDate.now(),
+          dueDate: LocalDate.now().plusDays(10),
+          votable: true,
+          title: "Asamblea III",
+          content: "El acta de la asamblea va aca.",
+          approved: false,
+          consorcio: consorcio
+      ).save(failOnError: true)
       def unit1 = new Unit(
         address: consorcio.address,
         floor: "4",
@@ -45,7 +71,6 @@ class BootStrap {
         kind: "Apartment",
         consorcio: consorcio
       ).save(failOnError: true)
-
 
       def owner1 = new User(
         first_name: "Jorge",

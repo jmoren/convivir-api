@@ -1,0 +1,8 @@
+import convivit.api.Consorcio
+
+model {
+	Iterable<Consorcio> consorcioList
+}
+
+json tmpl.consorcio(consorcioList ?: [])
+
