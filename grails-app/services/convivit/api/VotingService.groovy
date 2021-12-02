@@ -10,7 +10,7 @@ class VotingService {
       def meet = Meet.get(meetId)
       Vote vote = role.vote(meet, value)
       // check how is the voting status
-      meet.updateStatus()
+      meet.updateStatus(vote)
       return vote
     }
 

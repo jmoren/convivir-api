@@ -32,6 +32,7 @@ class BootStrap {
           title: "Asamblea II",
           content: "El acta de la asamblea va aca.",
           approved: true,
+          finishedAt: LocalDate.now().minusDays(10),
           consorcio: consorcio
       ).save(failOnError: true)
       def meet3 = new Meet(

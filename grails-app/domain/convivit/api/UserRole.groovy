@@ -46,8 +46,7 @@ class UserRole {
 
       this.allowedToVoteIn(meet)
 
-      def vote = new Vote(value: value, meet: meet, date: LocalDate.now()).save(failureOnError: true)
-      this.addToVotes(vote)
+      def vote = new Vote(value: value, meet: meet, role: this, date: LocalDate.now()).save()
       return vote
     }
 
@@ -84,13 +83,12 @@ class UserRole {
     }
 
     private Boolean allowedToVoteIn(Meet meet) {
-      Vote voted = meet.votes.find {
+      def vote = meet.votes.find {
         it.role.unit.id == this.unit.id
       }
-
-      if (voted) {
-        def role_name = voted.role.role == 'tenant' ? 'Inquilino' : 'Propietario'
-        def user_name = "${voted.role.user.first_name} ${voted.role.user.last_name}"
+      if (vote != null) {
+        def role_name = vote.role.role == 'tenant' ? 'Inquilino' : 'Propietario'
+        def user_name = "${vote.role.user.first_name} ${vote.role.user.last_name}"
         def message = "Ya hay un voto de esta unidad: ${user_name} (${role_name})"
         throw new IllegalStateException(message)
       }
