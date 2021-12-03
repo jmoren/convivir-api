@@ -11,6 +11,7 @@ class UrlMappings {
         patch "/$controller/$id(.$format)?"(action:"patch")
 
         post "/meet/$id/vote/$roleId"(controller: "meet", action: "vote")
+        post "/invitation/$id/move"(controller: "invitation", action: "updateState")
         post "/user/login"(controller: "user", action: "login")
 
         "/"(controller: 'application', action:'index')

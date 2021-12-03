@@ -14,4 +14,24 @@ class InvitationService {
           return invitation
         }
     }
+
+    Invitation useInvitation(Long invitationId) {
+        Invitation invitation = Invitation.get(invitationId)
+        return invitation.useIt()
+    }
+
+    Invitation closeInvitation(Long invitationId) {
+        Invitation invitation = Invitation.get(invitationId)
+        return invitation.closeIt()
+    }
+
+    Invitation extendInvitation(Long invitationId, LocalDate date) {
+        Invitation invitation = Invitation.get(invitationId)
+        return invitation.extendIt(date)
+    }
+
+    Invitation cancelInvitation(Long invitationId) {
+        Invitation invitation = Invitation.get(invitationId)
+        return invitation.cancelIt()
+    }
 }

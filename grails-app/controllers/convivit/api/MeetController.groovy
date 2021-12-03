@@ -6,7 +6,7 @@ import grails.converters.*
 
 class MeetController extends RestfulController {
     static responseFormats = ['json', 'xml']
-    def VotingService
+    VotingService votingService
 
     MeetController() {
         super(Meet)
@@ -18,10 +18,10 @@ class MeetController extends RestfulController {
       respond([meetList: meets])
     }
 
-    def vote(Long id, Long roleId, Boolean v) {
+    def vote(Long id, Long roleId) {
       try {
         def myValue = request.JSON.vote
-        def vote = VotingService.voteMeet(id, roleId, myValue)
+        def vote = votingService.voteMeet(id, roleId, myValue)
         respond(vote)
       } catch (Exception e) {
         render( status: 403, contentType: "text/json"){
