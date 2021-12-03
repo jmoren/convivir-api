@@ -38,7 +38,7 @@ class Invitation {
 
       this.status = 'validated'
       this.validatedAt = LocalDate.now()
-      this.save()
+      // this.save()
       return this
     }
 
@@ -48,7 +48,7 @@ class Invitation {
         this.status = 'closed'
         this.closedAt = LocalDate.now()
         this.overDue =  this.fromDate.compareTo(today) < 1
-        this.save()
+        // this.save()
         return this
       } else {
         throw new IllegalStateException("Invitacion no esta validada")
@@ -66,7 +66,7 @@ class Invitation {
       }
 
       this.toDate = newDate
-      this.save()
+      // this.save()
       return this
     }
 
@@ -81,7 +81,7 @@ class Invitation {
 
       this.status = 'canceled'
       this.canceledAt = LocalDate.now()
-      this.save()
+      // this.save()
       return this
     }
 }

@@ -21,13 +21,13 @@ class Meet {
     finishedAt nullable: true
   }
 
-  void addVote(Vote vote) {
+  void registerVote(Vote vote) {
     this.addToVotes(vote)
     int total = this.consorcio.units.size()
     int afirmative = this.votes.findAll { it.value == true }.size()
     int negative = this.votes.findAll { it.value == false || it.value == null }.size()
     int totalVotes = this.votes.size()
-    boolean half = (total/2) < totalVotes
+    // boolean half = (total/2) < totalVotes
     if (totalVotes == total) {
       this.approved = (afirmative > negative)
       this.finishedAt = LocalDate.now()

@@ -2,7 +2,6 @@ package convivit.api
 
 import java.time.LocalDate
 class UserRole {
-    // owner, tenant
     String role
     Boolean authorized
     Set votes = []
@@ -33,14 +32,16 @@ class UserRole {
             fromDate: fromDate,
             toDate: toDate,
             kind: kind,
+            role: this,
             status: 'pending'
         ).save()
+
         this.addToInvitations(invitation)
         return invitation
     }
 
     Vote vote(Meet meet, Boolean value) {
-      if (this.unit.consorcio.id != meet.consorcio.id) {
+      if (this.unit.consorcio != meet.consorcio) {
         throw new IllegalStateException("Esta asamblea no es de tu consorcio")
       }
 
@@ -48,6 +49,7 @@ class UserRole {
 
       def vote = new Vote(value: value, meet: meet, role: this, date: LocalDate.now()).save()
       this.addToVotes(vote)
+      meet.registerVote(vote)
       return vote
     }
 
@@ -85,7 +87,7 @@ class UserRole {
 
     private Boolean allowedToVoteIn(Meet meet) {
       def vote = meet.votes.find {
-        it.role.unit.id == this.unit.id
+        it.role.unit == this.unit
       }
       if (vote != null) {
         def role_name = vote.role.role == 'tenant' ? 'Inquilino' : 'Propietario'

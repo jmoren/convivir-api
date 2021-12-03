@@ -16,7 +16,7 @@ class UserRoleSpec extends Specification implements DomainUnitTest<UserRole> {
           first_name: "Mauro",
           last_name: "Icardi",
           email: "inquilino@test.com"
-      ).save(failureOnError: true)
+      ).save(failOnError: true)
 
       def role = new UserRole(role: "tenant", authorized: authorized)
       tenant.addToRoles(role)
