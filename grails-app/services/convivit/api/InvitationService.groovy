@@ -17,21 +17,38 @@ class InvitationService {
 
     Invitation useInvitation(Long invitationId) {
         Invitation invitation = Invitation.get(invitationId)
-        return invitation.useIt()
+        if (invitation.canUseIt()) {
+          invitation.save(flush:true, failOnError:true)
+          println("After save(flush: true, failOnError: true): Status => ${invitation.status}")
+          return invitation
+        }
     }
 
     Invitation closeInvitation(Long invitationId) {
         Invitation invitation = Invitation.get(invitationId)
-        return invitation.closeIt()
-    }
-
-    Invitation extendInvitation(Long invitationId, LocalDate date) {
-        Invitation invitation = Invitation.get(invitationId)
-        return invitation.extendIt(date)
+        if (invitation.canCloseIt()) {
+          invitation.save(flush:true, failOnError:true)
+          println("After save(flush: true, failOnError: true): Status => ${invitation.status}")
+          return invitation
+        }
     }
 
     Invitation cancelInvitation(Long invitationId) {
         Invitation invitation = Invitation.get(invitationId)
-        return invitation.cancelIt()
+        if (invitation.canCancelIt()) {
+          invitation.save(flush:true, failOnError:true)
+          println("After save(flush: true, failOnError: true): Status => ${invitation.status}")
+          return invitation
+        }
+    }
+
+    Invitation extendInvitation(Long invitationId, LocalDate date) {
+        Invitation invitation = Invitation.get(invitationId)
+        if (invitation.canExtendIt(date)) {
+          invitation.save(flush:true, failOnError:true)
+          println("After save(flush: true, failOnError: true): Status => ${invitation.status}")
+          println("After save(flush: true, failOnError: true): CanceledAt => ${invitation.canceledAt}")
+          return invitation
+        }
     }
 }

@@ -8,6 +8,7 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
 
     def setupInvitation(String status, LocalDate from, LocalDate to) {
       def invitation = new Invitation(
+        code: UUID.randomUUID().toString(),
         fromDate: from,
         toDate: to,
         dni: "23456432",
@@ -26,7 +27,7 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
         setupInvitation("pending", from, to)
       when:
         Invitation i = Invitation.get(this.invitationId)
-        i.useIt()
+        i.canUseIt().save()
       then:
         i.status == "validated"
         i.validatedAt == LocalDate.now()
@@ -39,7 +40,7 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
         setupInvitation("validated", from, to)
       when:
         Invitation i = Invitation.get(this.invitationId)
-        i.useIt()
+        i.canUseIt().save()
       then:
         Exception e = thrown()
         e.message == "Invitacion ya utilizada"
@@ -52,7 +53,7 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
         setupInvitation("pending", from, to)
       when:
         Invitation i = Invitation.get(this.invitationId)
-        i.useIt()
+        i.canUseIt().save()
       then:
         Exception e = thrown()
         e.message == "Invitacion no es valida para hoy"
@@ -65,11 +66,10 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
         setupInvitation("pending", from, to)
       when:
         Invitation i = Invitation.get(this.invitationId)
-        i.useIt()
+        i.canUseIt().save()
       then:
-        Exception e = thrown()
-        e.message == "Invitacion esta vencida"
         i.status == 'overdue'
+        i.closedAt == LocalDate.now()
     }
 
     void "Extender una invitacion valida"() {
@@ -80,7 +80,7 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
       when:
         Invitation i = Invitation.get(this.invitationId)
         LocalDate newDate = LocalDate.now().plusDays(5)
-        i.extendIt(newDate)
+        i.canExtendIt(newDate).save()
       then:
         i.toDate == newDate
     }
@@ -93,7 +93,7 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
       when:
         Invitation i = Invitation.get(this.invitationId)
         LocalDate newDate = LocalDate.now().plusDays(5)
-        i.extendIt(newDate)
+        i.canExtendIt(newDate).save()
       then:
         Exception e = thrown()
         e.message  == "La invitacion ya se venció"
@@ -107,7 +107,7 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
       when:
         Invitation i = Invitation.get(this.invitationId)
         LocalDate newDate = LocalDate.now().plusDays(5)
-        i.extendIt(newDate)
+        i.canExtendIt(newDate).save()
       then:
         Exception e = thrown()
         e.message  == "No se puede extender porque ya esta cancelada"
@@ -120,7 +120,7 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
         setupInvitation("validated", from, to)
       when:
         Invitation i = Invitation.get(this.invitationId)
-        i.closeIt()
+        i.canCloseIt().save()
       then:
         i.status == "closed"
         i.closedAt == LocalDate.now()
@@ -133,7 +133,7 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
         setupInvitation("canceled", from, to)
       when:
         Invitation i = Invitation.get(this.invitationId)
-        i.closeIt()
+        i.canCloseIt().save()
       then:
         Exception e = thrown()
         e.message == "Invitacion no esta validada"
@@ -146,7 +146,7 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
         setupInvitation("validated", from, to)
       when:
         Invitation i = Invitation.get(this.invitationId)
-        i.closeIt()
+        i.canCloseIt().save()
       then:
         i.status == "closed"
         i.overDue == true
@@ -160,7 +160,7 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
         setupInvitation("validated", from, to)
       when:
         Invitation i = Invitation.get(this.invitationId)
-        i.cancelIt()
+        i.canCancelIt().save()
       then:
         Exception e = thrown()
         e.message == "No se puede cancelar una invitacion en uso"
@@ -173,7 +173,7 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
         setupInvitation("canceled", from, to)
       when:
         Invitation i = Invitation.get(this.invitationId)
-        i.cancelIt()
+        i.canCancelIt().save()
       then:
         Exception e = thrown()
         e.message == "No se puede cancelar una invitacion ya cancelada"
@@ -186,7 +186,7 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
         setupInvitation("pending", from, to)
       when:
         Invitation i = Invitation.get(this.invitationId)
-        i.cancelIt()
+        i.canCancelIt().save()
       then:
         i.status == "canceled"
         i.canceledAt == LocalDate.now()

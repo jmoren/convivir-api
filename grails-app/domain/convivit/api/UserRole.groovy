@@ -26,7 +26,9 @@ class UserRole {
         this.stopIfAlreadyInvited(fromDate, dni)
         this.stopIfHasInValidDates(kind, fromDate, toDate)
 
+        String code = UUID.randomUUID().toString()
         def invitation = new Invitation(
+            code: code,
             dni: dni,
             email: email,
             fromDate: fromDate,

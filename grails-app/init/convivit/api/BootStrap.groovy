@@ -44,6 +44,7 @@ class BootStrap {
           approved: false,
           consorcio: consorcio
       ).save(failOnError: true)
+
       def unit1 = new Unit(
         address: consorcio.address,
         floor: "4",
@@ -109,6 +110,20 @@ class BootStrap {
       def ownerRole3  = new UserRole(user: owner3, unit: unit3, role: 'owner').save(failOnError: true)
       def tenantRole1 = new UserRole(user: tenant1, unit: unit3, role: 'tenant', authorized: false).save(failOnError: true)
       def tenantRole2 = new UserRole(user: tenant2, unit: unit4, role: 'tenant', authorized: true).save(failOnError: true)
+
+      def invitation = new Invitation(
+          code: UUID.randomUUID().toString(),
+          dni: "28023787",
+          email: "paco@email.com",
+          kind: "Personal",
+          fromDate: LocalDate.now().plusDays(2),
+          toDate: LocalDate.now().plusDays(3),
+          status: "pending",
+          role: ownerRole1
+      ).save()
+
+      ownerRole1.addToInvitations(invitation)
+      println "Bootstraped data"
     }
 
     def destroy = {

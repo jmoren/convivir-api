@@ -6,4 +6,5 @@ model {
 
 json g.render(unit, [resolveTemplate: false, excludes: ['consorcio']]) {
 	consorcio g.render(unit.consorcio)
+	tenant g.render(unit.getTenant())
 }

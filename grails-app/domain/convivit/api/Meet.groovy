@@ -27,7 +27,7 @@ class Meet {
     int afirmative = this.votes.findAll { it.value == true }.size()
     int negative = this.votes.findAll { it.value == false || it.value == null }.size()
     int totalVotes = this.votes.size()
-    // boolean half = (total/2) < totalVotes
+
     if (totalVotes == total) {
       this.approved = (afirmative > negative)
       this.finishedAt = LocalDate.now()

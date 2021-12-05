@@ -4,6 +4,7 @@ import java.time.LocalDate
 class Invitation {
     static belongsTo = [role: UserRole]
     // Status: pending, validated, canceled, overdue, closed
+    String code
     String dni
     String email
     String kind
@@ -22,7 +23,7 @@ class Invitation {
       overDue nullable: true, default: false
     }
 
-    Invitation useIt() {
+    Invitation canUseIt() {
       def today = LocalDate.now()
       if (this.status == 'validated') {
         throw new IllegalStateException("Invitacion ya utilizada")
@@ -32,30 +33,28 @@ class Invitation {
       }
       if (this.fromDate < today) {
         this.status = 'overdue'
-        this.save()
-        throw new IllegalStateException("Invitacion esta vencida")
+        this.closedAt = LocalDate.now()
+        return this
       }
 
       this.status = 'validated'
       this.validatedAt = LocalDate.now()
-      // this.save()
       return this
     }
 
-    Invitation closeIt() {
+    Invitation canCloseIt() {
       def today = LocalDate.now()
       if (this.status == 'validated') {
         this.status = 'closed'
         this.closedAt = LocalDate.now()
         this.overDue =  this.fromDate.compareTo(today) < 1
-        // this.save()
         return this
       } else {
         throw new IllegalStateException("Invitacion no esta validada")
       }
     }
 
-    Invitation extendIt(LocalDate newDate) {
+    Invitation canExtendIt(LocalDate newDate) {
       def today = LocalDate.now()
       if (this.status == "pending" && this.fromDate.compareTo(today) < 0) {
         throw new IllegalStateException("La invitacion ya se venció")
@@ -66,11 +65,10 @@ class Invitation {
       }
 
       this.toDate = newDate
-      // this.save()
       return this
     }
 
-    Invitation cancelIt() {
+    Invitation canCancelIt() {
       if (this.status == 'validated') {
         throw new IllegalStateException("No se puede cancelar una invitacion en uso")
       }
@@ -78,10 +76,8 @@ class Invitation {
       if (this.status == 'canceled') {
         throw new IllegalStateException("No se puede cancelar una invitacion ya cancelada")
       }
-
       this.status = 'canceled'
       this.canceledAt = LocalDate.now()
-      // this.save()
       return this
     }
 }
