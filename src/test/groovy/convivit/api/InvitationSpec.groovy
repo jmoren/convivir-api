@@ -30,7 +30,7 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
         i.useIt().save()
       then:
         i.status == "validated"
-        i.validatedAt == LocalDate.now()
+        i.validatedAt != null
     }
 
     void "Utilizar una invitacion dos veces"() {
@@ -69,7 +69,7 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
         i.useIt().save()
       then:
         i.status == 'overdue'
-        i.closedAt == LocalDate.now()
+        i.closedAt != null
     }
 
     void "Extender una invitacion valida"() {
@@ -123,7 +123,7 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
         i.closeIt().save()
       then:
         i.status == "closed"
-        i.closedAt == LocalDate.now()
+        i.closedAt != null
     }
 
     void "Cerrar una invitacion cancelada"(){
@@ -150,7 +150,7 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
       then:
         i.status == "closed"
         i.overDue == true
-        i.closedAt == LocalDate.now()
+        i.closedAt != null
     }
 
     void "Cancelar una invitacion en uso"(){
@@ -189,6 +189,6 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
         i.cancelIt().save()
       then:
         i.status == "canceled"
-        i.canceledAt == LocalDate.now()
+        i.canceledAt != null
     }
  }
