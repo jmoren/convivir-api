@@ -1,5 +1,5 @@
 package convivit.api
-import java.time.LocalDate
+import java.time.*
 
 class Invitation {
     static belongsTo = [role: UserRole]
@@ -12,9 +12,9 @@ class Invitation {
     Boolean overDue
     LocalDate fromDate
     LocalDate toDate
-    LocalDate validatedAt
-    LocalDate closedAt
-    LocalDate canceledAt
+    LocalDateTime validatedAt
+    LocalDateTime closedAt
+    LocalDateTime canceledAt
 
     static constraints = {
       validatedAt nullable: true
@@ -43,12 +43,12 @@ class Invitation {
 
       if (this.fromDate < today) {
         setStatus('overdue')
-        setClosedAt(LocalDate.now())
+        setClosedAt(LocalDateTime.now())
         return this
       }
 
       setStatus('validated')
-      setValidatedAt(LocalDate.now())
+      setValidatedAt(LocalDateTime.now())
       return this
     }
 
@@ -56,7 +56,7 @@ class Invitation {
       def today = LocalDate.now()
       if (this.status == 'validated') {
         setStatus('closed')
-        setClosedAt(LocalDate.now())
+        setClosedAt(LocalDateTime.now())
         def isOverdue = this.fromDate.compareTo(today) < 1
         setOverDue(isOverdue)
         return this
@@ -88,7 +88,7 @@ class Invitation {
         throw new IllegalStateException("No se puede cancelar una invitacion ya cancelada")
       }
       setStatus('canceled')
-      setCanceledAt(LocalDate.now())
+      setCanceledAt(LocalDateTime.now())
       return this
     }
 }
