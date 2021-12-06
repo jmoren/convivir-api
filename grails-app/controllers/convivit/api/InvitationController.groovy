@@ -25,25 +25,30 @@ class InvitationController extends RestfulController {
     }
 
     def move(Long invitationId) {
-      println "Iniciando move de invitacion: ${invitationId} - "
-      String currentStatus = request.JSON.status
-      switch(currentStatus) {
-        case 'validate':
-          def invitation = invitationService.useInvitation(invitationId)
-          respond(invitation)
-          break;
-        case 'cancel':
-          def invitation = invitationService.cancelInvitation(invitationId)
-          respond(invitation)
-          break;
-        case 'close':
-          def invitation = invitationService.closeInvitation(invitationId)
-          respond(invitation)
-          break;
-        default:
-          render( status: 404, contentType: "text/json"){
-              error "Estado no permitido"
-          }
+      try {
+        String currentStatus = request.JSON.status
+        switch(currentStatus) {
+          case 'validate':
+            def invitation = invitationService.useInvitation(invitationId)
+            respond(invitation)
+            break;
+          case 'cancel':
+            def invitation = invitationService.cancelInvitation(invitationId)
+            respond(invitation)
+            break;
+          case 'close':
+            def invitation = invitationService.closeInvitation(invitationId)
+            respond(invitation)
+            break;
+          default:
+            render( status: 404, contentType: "text/json"){
+                error "Estado no permitido"
+            }
+        }
+      } catch (Exception e) {
+        render( status: 400, contentType: "text/json"){
+            error e.message
+        }
       }
     }
 }
