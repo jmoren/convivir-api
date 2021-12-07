@@ -4,4 +4,10 @@ model {
 	Consorcio consorcio
 }
 
-json g.render(consorcio, [resolveTemplate: false])
+json g.render(consorcio, [resolveTemplate: false]) {
+	admin {
+		first_name consorcio.admin.user.first_name
+		last_name consorcio.admin.user.last_name
+		email consorcio.admin.user.email
+	}
+}

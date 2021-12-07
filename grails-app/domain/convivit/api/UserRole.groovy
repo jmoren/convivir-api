@@ -20,6 +20,15 @@ class UserRole {
         authorized nullable: true, default: false
     }
 
+    Consorcio consorcio() {
+        println("Vamos a buscar el consorcio.... si soy admin.")
+        if (this.role == 'admin') {
+            return Consorcio.findByAdmin(this)
+        } else {
+            return null
+        }
+    }
+
     Invitation inviteTo(LocalDate fromDate, LocalDate toDate, String email, String dni) {
         String kind = this.getInvitationKind()
 

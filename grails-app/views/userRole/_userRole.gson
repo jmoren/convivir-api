@@ -6,4 +6,5 @@ model {
 
 json g.render(userRole, [resolveTemplate: false, excludes: ['unit', 'user', 'votes', 'invitations']]) {
 	unit g.render(userRole.unit)
+	consorcio g.render(userRole.consorcio())
 }
