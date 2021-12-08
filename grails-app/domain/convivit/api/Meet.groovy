@@ -16,6 +16,9 @@ class Meet {
     votes: Vote
   ]
 
+  static mapping = {
+      sort date: "desc"
+  }
   static constraints = {
     dueDate nullable: true
     finishedAt nullable: true

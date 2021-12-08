@@ -8,4 +8,8 @@ class Vote {
 
     static constraints = {
     }
+
+    static mapping = {
+        sort date: "asc"
+    }
 }

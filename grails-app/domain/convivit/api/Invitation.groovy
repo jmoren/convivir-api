@@ -23,6 +23,10 @@ class Invitation {
       overDue nullable: true, default: false
     }
 
+    static mapping = {
+        sort "fromDate"
+    }
+
     Invitation useIt() {
       def today = LocalDate.now()
       if (this.status == 'canceled') {

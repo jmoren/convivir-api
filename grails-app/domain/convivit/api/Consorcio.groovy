@@ -3,6 +3,7 @@ package convivit.api
 class Consorcio {
     String name
     String address
+    // Building, Country
     String type
 
     Set units = []

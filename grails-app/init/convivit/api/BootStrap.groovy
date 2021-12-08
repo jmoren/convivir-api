@@ -1,5 +1,5 @@
 package convivit.api
-import java.time.LocalDate
+import java.time.*
 class BootStrap {
 
     def init = { servletContext ->
@@ -111,7 +111,7 @@ class BootStrap {
       def tenantRole1 = new UserRole(user: tenant1, unit: unit3, role: 'tenant', authorized: false).save(failOnError: true)
       def tenantRole2 = new UserRole(user: tenant2, unit: unit4, role: 'tenant', authorized: true).save(failOnError: true)
 
-      def invitation = new Invitation(
+      def invitation1 = new Invitation(
           code: UUID.randomUUID().toString(),
           dni: "28023787",
           email: "paco@email.com",
@@ -122,7 +122,20 @@ class BootStrap {
           role: ownerRole1
       ).save()
 
-      ownerRole1.addToInvitations(invitation)
+      def invitation2 = new Invitation(
+          code: UUID.randomUUID().toString(),
+          dni: "23023787",
+          email: "amanda@email.com",
+          kind: "Personal",
+          fromDate: LocalDate.now().minusDays(4),
+          toDate: LocalDate.now().minusDays(1),
+          status: "validated",
+          validatedAt: LocalDateTime.now().minusDays(3),
+          role: ownerRole1
+      ).save()
+
+      ownerRole1.addToInvitations(invitation1)
+      ownerRole1.addToInvitations(invitation2)
       println "Bootstraped data"
     }
 

@@ -18,6 +18,9 @@ class Unit {
         return this.kind == 'Apartment'
     }
 
+    static mapping = {
+        sort "number"
+    }
     Boolean isHouse() {
         return this.kind == 'House'
     }
@@ -36,25 +39,27 @@ class Unit {
     UserRole addRole(User user, String role, Boolean authorization) {
       def currentOwner = this.getOwner()
       def currentTenant = this.getTenant()
-
+      
       if (role == 'owner') {
-        if (currentOwner != null) {
+        if (currentOwner) {
           throw new IllegalArgumentException("Esta unidad ya tiene propietario")
         }
-        if (currentTenant.id == user.id) {
-          throw new IllegalArgumentException("No se puede ser propietario e inquilino a la vez")
+        if (currentTenant && currentTenant.id == user.id) {
+          throw new IllegalArgumentException("No se puede ser propietario e inquilino al mismo tiempo")
         }
       }
 
       if (role == 'tenant') {
-        if (currentTenant != null) {
+        if (currentTenant) {
           throw new IllegalArgumentException("Esta unidad ya tiene inquilino")
         }
 
-        if (currentOwner.id == user.id) {
-          throw new IllegalArgumentException("No se puede ser propietario e inquilino a la vez")
+        if (currentOwner && currentOwner.id == user.id) {
+          throw new IllegalArgumentException("No se puede ser propietario e inquilino al mismo tiempo")
         }
       }
+
+      
 
       UserRole userRole = new UserRole(
         unit: this,

@@ -9,6 +9,10 @@ class User {
       roles: UserRole
     ]
 
+    static mapping = {
+        sort "email"
+    }
+
     static constraints = {
       email nullable: false, unique: true, email: true
       first_name nullable: false

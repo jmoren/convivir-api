@@ -10,6 +10,8 @@ class UrlMappings {
         post "/invitation/$invitationId/move"(controller: "invitation", action: "move")
         post "/invitation/$invitationId/extend"(controller: "invitation", action: "extend")
 
+        get "/unit/list/$consorcioId"(controller: "unit", action: "listByConsorcio")
+
         delete "/$controller/$id(.$format)?"(action:"delete")
         get "/$controller(.$format)?"(action:"index")
         get "/$controller/$id(.$format)?"(action:"show")

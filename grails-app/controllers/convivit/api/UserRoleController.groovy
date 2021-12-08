@@ -17,7 +17,6 @@ class UserRoleController extends RestfulController {
     def save(Long unitId, Long userId, Long roleId) {
       try {
         def params = request.JSON.role
-        println "params: " + params
         UserRole userRole = unitService.addRole(params.unitId, params.userId, params.role, params.authorized)
         respond(userRole)
       } catch (Exception e) {
