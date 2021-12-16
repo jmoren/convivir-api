@@ -4,7 +4,6 @@ import grails.testing.services.ServiceUnitTest
 import spock.lang.Specification
 
 class UnitServiceSpec extends Specification implements ServiceUnitTest<UnitService>{
-
     def setup() {
     }
 
@@ -15,4 +14,4 @@ class UnitServiceSpec extends Specification implements ServiceUnitTest<UnitServi
         expect:"fix me"
             true == true
     }
-}
+ }
