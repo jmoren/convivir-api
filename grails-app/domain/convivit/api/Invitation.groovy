@@ -2,6 +2,13 @@ package convivit.api
 import java.time.*
 
 class Invitation {
+
+    static class InvitationException extends Exception { 
+      public InvitationException(String errorMessage) {
+          super(errorMessage);
+      }
+    }
+
     static belongsTo = [role: UserRole]
     // Status: pending, validated, canceled, overdue, closed
     String code
@@ -30,19 +37,19 @@ class Invitation {
     Invitation useIt() {
       def today = LocalDate.now()
       if (this.status == 'canceled') {
-        throw new IllegalStateException("No se puede validar porque ya esta cancelada")
+        throw new InvitationException("No se puede validar porque ya esta cancelada")
       }
 
       if (this.status == 'closed') {
-        throw new IllegalStateException("No se puede validar porque ya esta cerrada")
+        throw new InvitationException("No se puede validar porque ya esta cerrada")
       }
 
       if (this.status == 'validated') {
-        throw new IllegalStateException("Invitacion ya utilizada")
+        throw new InvitationException("Invitacion ya utilizada")
       }
 
       if (this.fromDate > today) {
-        throw new IllegalStateException("Invitacion no es valida para hoy")
+        throw new InvitationException("Invitacion no es valida para hoy")
       }
 
       if (this.fromDate < today) {
@@ -65,18 +72,18 @@ class Invitation {
         setOverDue(isOverdue)
         return this
       } else {
-        throw new IllegalStateException("Invitacion no esta validada")
+        throw new InvitationException("Invitacion no esta validada")
       }
     }
 
     Invitation extendIt(LocalDate newDate) {
       def today = LocalDate.now()
       if (this.status == "pending" && this.fromDate.compareTo(today) < 0) {
-        throw new IllegalStateException("La invitacion ya se venció")
+        throw new InvitationException("La invitacion ya se venció")
       }
 
       if (this.status == 'canceled') {
-        throw new IllegalStateException("No se puede extender porque ya esta cancelada")
+        throw new InvitationException("No se puede extender porque ya esta cancelada")
       }
 
       setToDate(newDate)
@@ -85,11 +92,11 @@ class Invitation {
 
     Invitation cancelIt() {
       if (this.status == 'validated') {
-        throw new IllegalStateException("No se puede cancelar una invitacion en uso")
+        throw new InvitationException("No se puede cancelar una invitacion en uso")
       }
 
       if (this.status == 'canceled') {
-        throw new IllegalStateException("No se puede cancelar una invitacion ya cancelada")
+        throw new InvitationException("No se puede cancelar una invitacion ya cancelada")
       }
       setStatus('canceled')
       setCanceledAt(LocalDateTime.now())

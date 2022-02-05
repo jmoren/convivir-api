@@ -1,6 +1,12 @@
 package convivit.api
 
 class Unit {
+
+    static class UnitException extends Exception { 
+      public UnitException(String errorMessage) {
+        super(errorMessage);
+      }
+    }
     String address
     String number
     String floor
@@ -42,24 +48,22 @@ class Unit {
       
       if (role == 'owner') {
         if (currentOwner) {
-          throw new IllegalArgumentException("Esta unidad ya tiene propietario")
+          throw new UnitException("Esta unidad ya tiene propietario")
         }
         if (currentTenant && currentTenant.id == user.id) {
-          throw new IllegalArgumentException("No se puede ser propietario e inquilino al mismo tiempo")
+          throw new UnitException("No se puede ser propietario e inquilino al mismo tiempo")
         }
       }
 
       if (role == 'tenant') {
         if (currentTenant) {
-          throw new IllegalArgumentException("Esta unidad ya tiene inquilino")
+          throw new UnitException("Esta unidad ya tiene inquilino")
         }
 
         if (currentOwner && currentOwner.id == user.id) {
-          throw new IllegalArgumentException("No se puede ser propietario e inquilino al mismo tiempo")
+          throw new UnitException("No se puede ser propietario e inquilino al mismo tiempo")
         }
       }
-
-      
 
       UserRole userRole = new UserRole(
         unit: this,

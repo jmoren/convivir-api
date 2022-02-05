@@ -1,5 +1,8 @@
 package convivit.api
 
+import convivit.api.Vote.VoteException
+import convivit.api.Invitation.InvitationException
+
 import java.time.LocalDate
 class UserRole {
     String role
@@ -53,7 +56,7 @@ class UserRole {
 
     Vote vote(Meet meet, Boolean value) {
       if (this.unit.consorcio != meet.consorcio) {
-        throw new IllegalStateException("Esta asamblea no es de tu consorcio")
+        throw new VoteException("Esta asamblea no es de tu consorcio")
       }
 
       this.allowedToVoteIn(meet)
@@ -70,7 +73,7 @@ class UserRole {
       }
 
       if (exists) {
-        throw new IllegalStateException('Ya existe una invitacion para el DNI ' + dni)
+        throw new InvitationException('Ya existe una invitacion para el DNI ' + dni)
       }
 
       return true
@@ -78,11 +81,11 @@ class UserRole {
 
     private Boolean stopIfHasInValidDates(String kind, LocalDate from, LocalDate to) {
       if (kind == 'Personal' && to.isBefore(from)) {
-        throw new IllegalStateException("La fecha desde no puede ser mayor a la fecha hasta")
+        throw new InvitationException("La fecha desde no puede ser mayor a la fecha hasta")
       }
 
       if (kind == 'Special' && from.compareTo(to) != 0) {
-        throw new IllegalStateException("Una invitacion especial solo puede ser por el dia")
+        throw new InvitationException("Una invitacion especial solo puede ser por el dia")
       }
 
       return true
@@ -104,15 +107,15 @@ class UserRole {
         def role_name = vote.role.role == 'tenant' ? 'Inquilino' : 'Propietario'
         def user_name = "${vote.role.user.first_name} ${vote.role.user.last_name}"
         def message = "Ya hay un voto de esta unidad: ${user_name} (${role_name})"
-        throw new IllegalStateException(message)
+        throw new VoteException(message)
       }
 
       if ((this.role == 'tenant' && !this.authorized) || this.role == 'admin') {
-          throw new IllegalStateException("No tienes permisos para votar")
+          throw new VoteException("No tienes permisos para votar")
       }
 
       if (meet.valid()) {
-          throw new IllegalStateException("Ya pasó la fecha limite")
+          throw new VoteException("Ya pasó la fecha limite")
       }
 
       return true
