@@ -68,8 +68,8 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
         Invitation i = Invitation.get(this.invitationId)
         i.useIt().save()
       then:
-        i.status == 'overdue'
-        i.closedAt != null
+        i.status == 'validated'
+        i.validatedAt != null
     }
 
     void "Extender una invitacion valida"() {
@@ -87,8 +87,8 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
 
     void "Extender una invitacion vencida"() {
       given:
-        LocalDate from = LocalDate.now().minusDays(1)
-        LocalDate to = LocalDate.now().plusDays(1)
+        LocalDate from = LocalDate.now().minusDays(3)
+        LocalDate to = LocalDate.now().minusDays(1)
         setupInvitation("pending", from, to)
       when:
         Invitation i = Invitation.get(this.invitationId)

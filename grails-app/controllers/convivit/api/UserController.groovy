@@ -12,6 +12,13 @@ class UserController extends RestfulController {
 
     def login() {
       def e = request.JSON.email
-      respond(User.findByEmail(e))
+      def user = User.findByEmail(e)
+      if (user) {
+        respond(User.findByEmail(e))
+      } else {
+        render( status: 404, contentType: "text/json"){
+          error 'Usuario no encontrado'
+        }
+      }
     }
 }

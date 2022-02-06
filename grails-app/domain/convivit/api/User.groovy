@@ -1,8 +1,8 @@
 package convivit.api
 
 class User {
-    String first_name
-    String last_name
+    String firstName
+    String lastName
     String email
 
     static hasMany = [
@@ -15,7 +15,7 @@ class User {
 
     static constraints = {
       email nullable: false, email: true
-      first_name nullable: false
-      last_name nullable: false
+      firstName nullable: false
+      lastName nullable: false
     }
 }

@@ -4,6 +4,7 @@ package convivit.api
 import grails.rest.*
 import grails.converters.*
 import java.time.LocalDate
+import convivit.api.Invitation.InvitationException
 
 class InvitationController extends RestfulController {
     InvitationService invitationService
@@ -19,9 +20,19 @@ class InvitationController extends RestfulController {
     }
 
     def extend(Long invitationId) {
-      LocalDate extendDate = LocalDate.parse(request.JSON.date)
-      def invitation = invitationService.extendInvitation(invitationId, extendDate)
-      respond(invitation)
+      try {
+        LocalDate extendDate = LocalDate.parse(request.JSON.date)
+        def invitation = invitationService.extendInvitation(invitationId, extendDate)
+        respond(invitation)
+      } catch(InvitationException e) {
+        render( status: 400, contentType: "text/json"){
+            error e.message
+        }
+      } catch(Exception e) {
+        render( status: 500, contentType: "text/json"){
+            error e.message
+        }
+      }
     }
 
     def move(Long invitationId) {
@@ -41,12 +52,16 @@ class InvitationController extends RestfulController {
             respond(invitation)
             break;
           default:
-            render( status: 404, contentType: "text/json"){
+            render( status: 400, contentType: "text/json"){
                 error "Estado no permitido"
             }
         }
-      } catch (Exception e) {
+      } catch (InvitationException e) {
         render( status: 400, contentType: "text/json"){
+            error e.message
+        }
+      } catch (Exception e) {
+        render( status: 500, contentType: "text/json"){
             error e.message
         }
       }

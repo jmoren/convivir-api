@@ -52,10 +52,8 @@ class Invitation {
         throw new InvitationException("Invitacion no es valida para hoy")
       }
 
-      if (this.fromDate < today) {
-        setStatus('overdue')
-        setClosedAt(LocalDateTime.now())
-        return this
+      if (this.toDate < today) {
+        throw new InvitationException("Invitacion esta vencida")
       }
 
       setStatus('validated')
@@ -68,7 +66,7 @@ class Invitation {
       if (this.status == 'validated') {
         setStatus('closed')
         setClosedAt(LocalDateTime.now())
-        def isOverdue = this.fromDate.compareTo(today) < 1
+        def isOverdue = this.toDate < today
         setOverDue(isOverdue)
         return this
       } else {
@@ -78,12 +76,16 @@ class Invitation {
 
     Invitation extendIt(LocalDate newDate) {
       def today = LocalDate.now()
-      if (this.status == "pending" && this.fromDate.compareTo(today) < 0) {
+      if (this.status == "pending" && this.toDate < today) {
         throw new InvitationException("La invitacion ya se venció")
       }
 
       if (this.status == 'canceled') {
         throw new InvitationException("No se puede extender porque ya esta cancelada")
+      }
+
+      if (this.toDate > newDate) {
+        throw new InvitationException("La nueva fecha tiene que ser mayor a la de salida")
       }
 
       setToDate(newDate)

@@ -16,24 +16,24 @@ class AssigningUnitRoleSpec extends Specification {
     UnitService unitService
   
     def createOwner() {
-      def user = new User(first_name: "First", last_name: "Owner", email: "email@email.com").save(failOnError: true)
+      def user = new User(firstName: "First", lastName: "Owner", email: "email@email.com").save(failOnError: true)
       this.ownerId = user.id
     }
     
     def createTenant() {
-      def tenant = new User(first_name: "Inquilino", last_name: "Nuevo", email: "inquilino@email.com").save(failOnError: true)
+      def tenant = new User(firstName: "Inquilino", lastName: "Nuevo", email: "inquilino@email.com").save(failOnError: true)
       this.tenantId = tenant.id
     }
 
     def createOwnerWithUnit(Unit unit) {
-      def user = new User(first_name: "Other", last_name: "Owner", email: "email2@email.com").save(failOnError: true)
+      def user = new User(firstName: "Other", lastName: "Owner", email: "email2@email.com").save(failOnError: true)
       def role = new UserRole(role: "owner", user: user, unit: unit).save(failOnError: true)
       unit.addToRoles(role)
       this.ownerId = user.id
     }
 
     def setup() {
-      def admin = new User(first_name: "Admin", last_name: "admin", email: "consorcio@email.com").save()
+      def admin = new User(firstName: "Admin", lastName: "admin", email: "consorcio@email.com").save()
       def adminRole = new UserRole(role: 'admin', user: admin).save()
 
       def consorcio = new Consorcio(name: "Test", admin: adminRole, address: "My address", type: "Building").save()

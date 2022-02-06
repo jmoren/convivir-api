@@ -99,13 +99,13 @@ class UserRole {
         }
     }
 
-    private Boolean allowedToVoteIn(Meet meet) {
+    private Void allowedToVoteIn(Meet meet) {
       def vote = meet.votes.find {
         it.role.unit == this.unit
       }
       if (vote != null) {
         def role_name = vote.role.role == 'tenant' ? 'Inquilino' : 'Propietario'
-        def user_name = "${vote.role.user.first_name} ${vote.role.user.last_name}"
+        def user_name = "${vote.role.user.firstName} ${vote.role.user.lastName}"
         def message = "Ya hay un voto de esta unidad: ${user_name} (${role_name})"
         throw new VoteException(message)
       }
@@ -117,7 +117,5 @@ class UserRole {
       if (meet.valid()) {
           throw new VoteException("Ya pasó la fecha limite")
       }
-
-      return true
     }
 }

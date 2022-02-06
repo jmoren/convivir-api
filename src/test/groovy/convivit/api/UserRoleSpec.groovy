@@ -13,8 +13,8 @@ class UserRoleSpec extends Specification implements DomainUnitTest<UserRole> {
 
     def addTenant(Unit unit, Boolean authorized) {
       def tenant = new User(
-          first_name: "Mauro",
-          last_name: "Icardi",
+          firstName: "Mauro",
+          lastName: "Icardi",
           email: "inquilino@test.com"
       ).save(failOnError: true)
 
@@ -50,8 +50,8 @@ class UserRoleSpec extends Specification implements DomainUnitTest<UserRole> {
       consorcio.addUnit(unit)
 
       def owner = new User(
-          first_name: "Jorge",
-          last_name: "Moreno",
+          firstName: "Jorge",
+          lastName: "Moreno",
           email: "propietario@test.com"
       ).save()
 
@@ -67,8 +67,8 @@ class UserRoleSpec extends Specification implements DomainUnitTest<UserRole> {
     def setUpUnitAsOwner(Boolean withTenant) {
       def unit = new Unit(street: "Melancolia", number: "34", type: "Apartment").save()
       def owner = new User(
-          first_name: "Jorge",
-          last_name: "Moreno",
+          firstName: "Jorge",
+          lastName: "Moreno",
           email: "propietario@test.com"
       ).save()
 

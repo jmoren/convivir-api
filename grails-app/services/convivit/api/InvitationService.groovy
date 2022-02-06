@@ -17,33 +17,29 @@ class InvitationService {
 
     Invitation useInvitation(Long invitationId) {
         Invitation invitation = Invitation.get(invitationId)
-        if (invitation.useIt()) {
-          invitation.save(flush:true, failOnError:true)
-          return invitation
-        }
+        invitation.useIt()
+        invitation.save(failOnError:true)
+        return invitation
     }
 
     Invitation closeInvitation(Long invitationId) {
         Invitation invitation = Invitation.get(invitationId)
-        if (invitation.closeIt()) {
-          invitation.save(flush:true, failOnError:true)
-          return invitation
-        }
+        invitation.closeIt()
+        invitation.save(failOnError:true)
+        return invitation
     }
 
     Invitation cancelInvitation(Long invitationId) {
         Invitation invitation = Invitation.get(invitationId)
-        if (invitation.cancelIt()) {
-          invitation.save(flush:true, failOnError:true)
-          return invitation
-        }
+        invitation.cancelIt()
+        invitation.save(failOnError:true)
+        return invitation
     }
 
     Invitation extendInvitation(Long invitationId, LocalDate date) {
         Invitation invitation = Invitation.get(invitationId)
-        if (invitation.extendIt(date)) {
-          invitation.save(flush:true, failOnError:true)
-          return invitation
-        }
+        invitation.extendIt(date)
+        invitation.save(failOnError:true)
+        return invitation
     }
 }

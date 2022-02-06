@@ -5,8 +5,8 @@ class BootStrap {
     def init = { servletContext ->
       def role = new UserRole(role: 'admin')
       def admin = new User(
-        first_name: "Admin",
-        last_name: "Admin",
+        firstName: "Admin",
+        lastName: "Admin",
         email: "consorcio@admin.com"
       ).addToRoles(role).save()
 
@@ -75,32 +75,32 @@ class BootStrap {
       ).save(failOnError: true)
 
       def owner1 = new User(
-        first_name: "Jorge",
-        last_name: "Moreno",
+        firstName: "Jorge",
+        lastName: "Moreno",
         email: "jmoren@gmail.com"
       ).save(failOnError: true)
 
       def owner2 = new User(
-        first_name: "Armando",
-        last_name: "Lio",
+        firstName: "Armando",
+        lastName: "Lio",
         email: "armando@lio.com"
       ).save(failOnError: true)
 
       def owner3 = new User(
-        first_name: "Pablo",
-        last_name: "Ramirez",
+        firstName: "Pablo",
+        lastName: "Ramirez",
         email: "pablo@ramirez.com"
       ).save(failOnError: true)
 
       def tenant1 = new User(
-        first_name: "Juan",
-        last_name: "Moreira",
+        firstName: "Juan",
+        lastName: "Moreira",
         email: "juan@moreira.com"
       ).save(failOnError: true)
 
       def tenant2 = new User(
-        first_name: "Pepe",
-        last_name: "Argento",
+        firstName: "Pepe",
+        lastName: "Argento",
         email: "pepe@argento.com"
       ).save(failOnError: true)
 

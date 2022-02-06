@@ -11,7 +11,6 @@ class UnitController extends RestfulController {
     }
 
     def listByConsorcio(Long consorcioId) {
-        println("listByConsorcio: ${consorcioId}")
         def consorcio = Consorcio.get(consorcioId)
         respond(consorcio.units)
     }

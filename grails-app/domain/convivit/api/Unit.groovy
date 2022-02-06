@@ -50,7 +50,7 @@ class Unit {
         if (currentOwner) {
           throw new UnitException("Esta unidad ya tiene propietario")
         }
-        if (currentTenant && currentTenant.id == user.id) {
+        if (currentTenant && currentTenant == user) {
           throw new UnitException("No se puede ser propietario e inquilino al mismo tiempo")
         }
       }
@@ -60,7 +60,7 @@ class Unit {
           throw new UnitException("Esta unidad ya tiene inquilino")
         }
 
-        if (currentOwner && currentOwner.id == user.id) {
+        if (currentOwner && currentOwner == user) {
           throw new UnitException("No se puede ser propietario e inquilino al mismo tiempo")
         }
       }

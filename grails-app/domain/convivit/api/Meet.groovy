@@ -32,9 +32,9 @@ class Meet {
     int totalVotes = this.votes.size()
 
     if (totalVotes == total) {
-      this.approved = (afirmative > negative)
-      this.finishedAt = LocalDate.now()
-      this.save(flush: true)
+      setApproved(afirmative > negative)
+      setFinishedAt(LocalDate.now())
+      this.save()
     }
   }
 

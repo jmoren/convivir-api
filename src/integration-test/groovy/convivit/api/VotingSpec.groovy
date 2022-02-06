@@ -16,21 +16,21 @@ class VotingSpec extends Specification {
     Long unitId
 
     def createOwner(Unit unit) {
-      def user = new User(first_name: "Probando", last_name: "Apellido", email: "email@email.com").save(failOnError: true)
+      def user = new User(firstName: "Probando", lastName: "Apellido", email: "email@email.com").save(failOnError: true)
       def role = new UserRole(role: "owner", user: user, unit: unit).save(failOnError: true)
       unit.addToRoles(role)
       this.roleId = role.id
     }
 
     def createTenant(Boolean authorized, Unit unit) {
-      def user = new User(first_name: "Probando", last_name: "Apellido", email: "email@email.com").save(failOnError: true)
+      def user = new User(firstName: "Probando", lastName: "Apellido", email: "email@email.com").save(failOnError: true)
       def role = new UserRole(role: "tenant", authorized: authorized, user: user).save(failOnError: true)
       unit.addToRoles(role)
       this.roleId = role.id
     }
 
     def setup() {
-      def admin = new User(first_name: "Admin", last_name: "admin", email: "consorcio@email.com").save()
+      def admin = new User(firstName: "Admin", lastName: "admin", email: "consorcio@email.com").save()
       def adminRole = new UserRole(role: 'admin', user: admin).save()
 
       def consorcio = new Consorcio(name: "Test", admin: adminRole, address: "My address", type: "Building").save()
