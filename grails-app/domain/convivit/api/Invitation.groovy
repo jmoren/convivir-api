@@ -3,6 +3,10 @@ import java.time.*
 
 class Invitation {
 
+   public enum Status {
+        PENDING, VALIDATED, CANCELED, OVERDUE, CLOSED
+    }
+
     static class InvitationException extends Exception { 
       public InvitationException(String errorMessage) {
           super(errorMessage);
@@ -10,12 +14,12 @@ class Invitation {
     }
 
     static belongsTo = [role: UserRole]
-    // Status: pending, validated, canceled, overdue, closed
+    // Invitation.Status: pending, validated, canceled, overdue, closed
     String code
     String dni
     String email
     String kind
-    String status
+    Status status
     Boolean overDue
     LocalDate fromDate
     LocalDate toDate
@@ -36,15 +40,15 @@ class Invitation {
 
     Invitation useIt() {
       def today = LocalDate.now()
-      if (this.status == 'canceled') {
+      if (this.status == Status.CANCELED) {
         throw new InvitationException("No se puede validar porque ya esta cancelada")
       }
 
-      if (this.status == 'closed') {
+      if (this.status == Status.CLOSED) {
         throw new InvitationException("No se puede validar porque ya esta cerrada")
       }
 
-      if (this.status == 'validated') {
+      if (this.status == Status.VALIDATED) {
         throw new InvitationException("Invitacion ya utilizada")
       }
 
@@ -53,21 +57,22 @@ class Invitation {
       }
 
       if (this.toDate < today) {
+        setStatus(Status.OVERDUE)
+        this.save()
         throw new InvitationException("Invitacion esta vencida")
       }
 
-      setStatus('validated')
+      setStatus(Status.VALIDATED)
       setValidatedAt(LocalDateTime.now())
       return this
     }
 
     Invitation closeIt() {
       def today = LocalDate.now()
-      if (this.status == 'validated') {
-        setStatus('closed')
+      if (this.status == Status.VALIDATED) {
+        setStatus(Status.CLOSED)
         setClosedAt(LocalDateTime.now())
-        def isOverdue = this.toDate < today
-        setOverDue(isOverdue)
+        setOverDue(this.toDate < today)
         return this
       } else {
         throw new InvitationException("Invitacion no esta validada")
@@ -76,11 +81,13 @@ class Invitation {
 
     Invitation extendIt(LocalDate newDate) {
       def today = LocalDate.now()
-      if (this.status == "pending" && this.toDate < today) {
+      if (this.status == Status.PENDING && this.toDate < today) {
+        setStatus(Status.OVERDUE)
+        this.save()
         throw new InvitationException("La invitacion ya se venció")
       }
 
-      if (this.status == 'canceled') {
+      if (this.status == Status.CANCELED) {
         throw new InvitationException("No se puede extender porque ya esta cancelada")
       }
 
@@ -93,14 +100,14 @@ class Invitation {
     }
 
     Invitation cancelIt() {
-      if (this.status == 'validated') {
+      if (this.status == Status.VALIDATED) {
         throw new InvitationException("No se puede cancelar una invitacion en uso")
       }
 
-      if (this.status == 'canceled') {
+      if (this.status == Status.CANCELED) {
         throw new InvitationException("No se puede cancelar una invitacion ya cancelada")
       }
-      setStatus('canceled')
+      setStatus(Status.CANCELED)
       setCanceledAt(LocalDateTime.now())
       return this
     }

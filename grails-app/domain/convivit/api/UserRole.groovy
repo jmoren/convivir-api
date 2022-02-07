@@ -2,8 +2,9 @@ package convivit.api
 
 import convivit.api.Vote.VoteException
 import convivit.api.Invitation.InvitationException
-
+import convivit.api.Invitation.Status
 import java.time.LocalDate
+
 class UserRole {
     String role
     Boolean authorized
@@ -47,7 +48,7 @@ class UserRole {
             toDate: toDate,
             kind: kind,
             role: this,
-            status: 'pending'
+            status: Status.PENDING
         ).save()
 
         this.addToInvitations(invitation)
@@ -69,7 +70,7 @@ class UserRole {
 
     private Boolean stopIfAlreadyInvited(LocalDate from, String dni) {
       Invitation exists = this.invitations.find {
-        it.dni == dni && it.status == 'pending' && it.fromDate == from
+        it.dni == dni && it.status == Status.PENDING && it.fromDate == from
       }
 
       if (exists) {
@@ -80,11 +81,11 @@ class UserRole {
     }
 
     private Boolean stopIfHasInValidDates(String kind, LocalDate from, LocalDate to) {
-      if (kind == 'Personal' && to.isBefore(from)) {
+      if (kind == 'Personal' && to < from) {
         throw new InvitationException("La fecha desde no puede ser mayor a la fecha hasta")
       }
 
-      if (kind == 'Special' && from.compareTo(to) != 0) {
+      if (kind == 'Special' && from != to) {
         throw new InvitationException("Una invitacion especial solo puede ser por el dia")
       }
 

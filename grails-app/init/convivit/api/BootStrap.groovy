@@ -1,5 +1,6 @@
 package convivit.api
 import java.time.*
+import convivit.api.Invitation.Status
 class BootStrap {
 
     def init = { servletContext ->
@@ -118,7 +119,7 @@ class BootStrap {
           kind: "Personal",
           fromDate: LocalDate.now().plusDays(2),
           toDate: LocalDate.now().plusDays(3),
-          status: "pending",
+          status: Status.PENDING,
           role: ownerRole1
       ).save()
 
@@ -129,7 +130,7 @@ class BootStrap {
           kind: "Personal",
           fromDate: LocalDate.now().minusDays(4),
           toDate: LocalDate.now().minusDays(1),
-          status: "validated",
+          status: Status.VALIDATED,
           validatedAt: LocalDateTime.now().minusDays(3),
           role: ownerRole1
       ).save()

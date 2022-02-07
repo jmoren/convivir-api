@@ -3,6 +3,8 @@ package convivit.api
 import grails.testing.gorm.DomainUnitTest
 import spock.lang.Specification
 import java.time.LocalDate
+import convivit.api.Invitation.Status
+
 class UserRoleSpec extends Specification implements DomainUnitTest<UserRole> {
 
     def setup() {
@@ -92,7 +94,7 @@ class UserRoleSpec extends Specification implements DomainUnitTest<UserRole> {
           Invitation invitation = r.inviteTo(fromDate, toDate, "amigo@mail.com", "234234343")
       then:
           Invitation.count() == 1
-          invitation.status == 'pending'
+          invitation.status == Status.PENDING
           invitation.kind == 'Personal'
           invitation.email == "amigo@mail.com"
           invitation.dni == "234234343"
@@ -108,7 +110,7 @@ class UserRoleSpec extends Specification implements DomainUnitTest<UserRole> {
           Invitation invitation = r.inviteTo(fromDate, fromDate, "otro_amigo@mail.com", "234234343")
       then:
           Invitation.count() == 1
-          invitation.status == 'pending'
+          invitation.status == Status.PENDING
           invitation.kind == 'Special'
           invitation.email == "otro_amigo@mail.com"
           invitation.dni == "234234343"

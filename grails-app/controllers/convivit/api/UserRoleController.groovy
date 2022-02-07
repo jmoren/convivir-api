@@ -4,6 +4,7 @@ package convivit.api
 import grails.rest.*
 import grails.converters.*
 import java.time.LocalDate
+import convivit.api.commands.InvitationParams
 
 class UserRoleController extends RestfulController {
     static responseFormats = ['json', 'xml']
@@ -28,17 +29,17 @@ class UserRoleController extends RestfulController {
  
     def invite(Long roleId) {
       try {
-        def params = request.JSON.invitation
+        def params = new InvitationParams(request.JSON.invitation)
         def invitation = invitationService.invite(
           params.dni,
           params.email,
-          LocalDate.parse(params.fromDate),
-          LocalDate.parse(params.toDate),
+          params.parsedFromDate(),
+          params.parsedToDate(),
           roleId
         )
         respond(invitation)
       } catch (Exception e) {
-        render( status: 403, contentType: "text/json"){
+        render( status: 400, contentType: "text/json"){
             error e.message
         }
       }

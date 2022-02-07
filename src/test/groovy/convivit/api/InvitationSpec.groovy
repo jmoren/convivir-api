@@ -3,10 +3,12 @@ package convivit.api
 import grails.testing.gorm.DomainUnitTest
 import spock.lang.Specification
 import java.time.LocalDate
+import convivit.api.Invitation.Status
+
 class InvitationSpec extends Specification implements DomainUnitTest<Invitation> {
     Long invitationId
 
-    def setupInvitation(String status, LocalDate from, LocalDate to) {
+    def setupInvitation(Status status, LocalDate from, LocalDate to) {
       def invitation = new Invitation(
         code: UUID.randomUUID().toString(),
         fromDate: from,
@@ -24,12 +26,12 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
       given:
         LocalDate from = LocalDate.now()
         LocalDate to = LocalDate.now().plusDays(1)
-        setupInvitation("pending", from, to)
+        setupInvitation(Status.PENDING, from, to)
       when:
         Invitation i = Invitation.get(this.invitationId)
         i.useIt().save()
       then:
-        i.status == "validated"
+        i.status == Status.VALIDATED
         i.validatedAt != null
     }
 
@@ -37,7 +39,7 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
       given:
         LocalDate from = LocalDate.now()
         LocalDate to = LocalDate.now().plusDays(1)
-        setupInvitation("validated", from, to)
+        setupInvitation(Status.VALIDATED, from, to)
       when:
         Invitation i = Invitation.get(this.invitationId)
         i.useIt().save()
@@ -50,7 +52,7 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
       given:
         LocalDate from = LocalDate.now().plusDays(1)
         LocalDate to = LocalDate.now().plusDays(1)
-        setupInvitation("pending", from, to)
+        setupInvitation(Status.PENDING, from, to)
       when:
         Invitation i = Invitation.get(this.invitationId)
         i.useIt().save()
@@ -63,12 +65,12 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
       given:
         LocalDate from = LocalDate.now().minusDays(2)
         LocalDate to = LocalDate.now().plusDays(3)
-        setupInvitation("pending", from, to)
+        setupInvitation(Status.PENDING, from, to)
       when:
         Invitation i = Invitation.get(this.invitationId)
         i.useIt().save()
       then:
-        i.status == 'validated'
+        i.status == Status.VALIDATED
         i.validatedAt != null
     }
 
@@ -76,7 +78,7 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
       given:
         LocalDate from = LocalDate.now().plusDays(1)
         LocalDate to = LocalDate.now().plusDays(2)
-        setupInvitation("pending", from, to)
+        setupInvitation(Status.PENDING, from, to)
       when:
         Invitation i = Invitation.get(this.invitationId)
         LocalDate newDate = LocalDate.now().plusDays(5)
@@ -89,13 +91,14 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
       given:
         LocalDate from = LocalDate.now().minusDays(3)
         LocalDate to = LocalDate.now().minusDays(1)
-        setupInvitation("pending", from, to)
+        setupInvitation(Status.PENDING, from, to)
       when:
         Invitation i = Invitation.get(this.invitationId)
         LocalDate newDate = LocalDate.now().plusDays(5)
         i.extendIt(newDate).save()
       then:
         Exception e = thrown()
+        i.status == Status.OVERDUE
         e.message  == "La invitacion ya se venció"
     }
 
@@ -103,7 +106,7 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
       given:
         LocalDate from = LocalDate.now()
         LocalDate to = LocalDate.now().plusDays(1)
-        setupInvitation("canceled", from, to)
+        setupInvitation(Status.CANCELED, from, to)
       when:
         Invitation i = Invitation.get(this.invitationId)
         LocalDate newDate = LocalDate.now().plusDays(5)
@@ -117,12 +120,12 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
       given:
         LocalDate from = LocalDate.now()
         LocalDate to = LocalDate.now().plusDays(1)
-        setupInvitation("validated", from, to)
+        setupInvitation(Status.VALIDATED, from, to)
       when:
         Invitation i = Invitation.get(this.invitationId)
         i.closeIt().save()
       then:
-        i.status == "closed"
+        i.status == Status.CLOSED
         i.closedAt != null
     }
 
@@ -130,7 +133,7 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
       given:
         LocalDate from = LocalDate.now()
         LocalDate to = LocalDate.now().plusDays(1)
-        setupInvitation("canceled", from, to)
+        setupInvitation(Status.CANCELED, from, to)
       when:
         Invitation i = Invitation.get(this.invitationId)
         i.closeIt().save()
@@ -143,12 +146,12 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
       given:
         LocalDate from = LocalDate.now().minusDays(2)
         LocalDate to = LocalDate.now().minusDays(1)
-        setupInvitation("validated", from, to)
+        setupInvitation(Status.VALIDATED, from, to)
       when:
         Invitation i = Invitation.get(this.invitationId)
         i.closeIt().save()
       then:
-        i.status == "closed"
+        i.status == Status.CLOSED
         i.overDue == true
         i.closedAt != null
     }
@@ -157,7 +160,7 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
       given:
         LocalDate from = LocalDate.now().minusDays(2)
         LocalDate to = LocalDate.now().minusDays(1)
-        setupInvitation("validated", from, to)
+        setupInvitation(Status.VALIDATED, from, to)
       when:
         Invitation i = Invitation.get(this.invitationId)
         i.cancelIt().save()
@@ -170,7 +173,7 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
       given:
         LocalDate from = LocalDate.now().minusDays(2)
         LocalDate to = LocalDate.now().minusDays(1)
-        setupInvitation("canceled", from, to)
+        setupInvitation(Status.CANCELED, from, to)
       when:
         Invitation i = Invitation.get(this.invitationId)
         i.cancelIt().save()
@@ -183,12 +186,12 @@ class InvitationSpec extends Specification implements DomainUnitTest<Invitation>
       given:
         LocalDate from = LocalDate.now().minusDays(2)
         LocalDate to = LocalDate.now().minusDays(1)
-        setupInvitation("pending", from, to)
+        setupInvitation(Status.PENDING, from, to)
       when:
         Invitation i = Invitation.get(this.invitationId)
         i.cancelIt().save()
       then:
-        i.status == "canceled"
+        i.status == Status.CANCELED
         i.canceledAt != null
     }
  }
